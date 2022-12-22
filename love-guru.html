@@ -1,0 +1,212 @@
+<div id="display" style="display: none"></div>
+<button id="prev" style="display: none">Prev</button>
+<button id="submit" style="display: none">Find Gifts</button>
+<button id="loveExpert">Love Expert</button>
+<script>
+	let previousState = null,
+		NextState = null;
+	const recipients = [
+		{
+			name: "Wife",
+			image: "https://i7.fnp.com/assets/images/cat/valentine/questions/layer1/wife.png",
+			firstLevel: [
+				{
+					id: "1st_after_marraige",
+					title: "First Valentines after marriage",
+					image: "https://i7.fnp.com/assets/images/cat/valentine/questions/layer1/first-valentine.png",
+					secondLevel: [
+						{
+							id: "grand",
+							title: "I am looking for something GRAND",
+							thirdLevel: [
+								{ id: "week", title: "I want to give her different gifts for the entire week", landing: "1" },
+								{ id: "budget", title: "Budget is no constraint", landing: "2" },
+								{ id: "longTerm", title: "Something that is useful for long", landing: "3" },
+							],
+						},
+						{
+							id: "surprise",
+							title: "I want to plan a surprise",
+							thirdLevel: [
+								{ id: "enthusiast", title: "She is a nature enthusiast", landing: "4" },
+								{ id: "makeup", title: "She is a makeup lover", landing: "5" },
+								{ id: "bollywood", title: "She loves Bollywood style surprises", landing: "6" },
+							],
+						},
+						{
+							id: "memorable",
+							title: "I want to Make it memorable",
+							thirdLevel: [
+								{ id: "not_too_romantic", title: "Not too romantic but sweet", landing: "7" },
+								{ id: "combo", title: "Probably a combo of gifts", landing: "8" },
+								{ id: "longTerm", title: "Something that she can cherish for long", landing: "9" },
+							],
+						},
+					],
+				},
+				{
+					id: "with_kids",
+					title: "Valentine's with kids",
+					image: "https://i7.fnp.com/assets/images/cat/valentine/questions/layer1/coupals-with-kids.png",
+				},
+				{
+					id: "after_a_long_time",
+					title: "Valentine's after a long time",
+					image: "https://i7.fnp.com/assets/images/cat/valentine/questions/layer1/valentine-long-time.png",
+				},
+				{
+					id: "special_year_both",
+					title: "Special year for both",
+					image: "https://i7.fnp.com/assets/images/cat/valentine/questions/layer1/special-valentine-wife.png",
+				},
+			],
+		},
+		{ name: "Girlfriend", image: "https://i7.fnp.com/assets/images/cat/valentine/questions/layer1/girfriend.png" },
+		{ name: "Fiancee", image: "https://i7.fnp.com/assets/images/cat/valentine/questions/layer1/Fiance.png" },
+		{ name: "Husband", image: "https://i7.fnp.com/assets/images/cat/valentine/questions/layer1/husbband.png" },
+		{ name: "Boyfriend", image: "https://i7.fnp.com/assets/images/cat/valentine/questions/layer1/boyfriend.png" },
+		{ name: "Fiance", image: "https://i7.fnp.com/assets/images/cat/valentine/questions/layer1/Fiancee.png" },
+	];
+	//allElements
+	var nextBtn = document.getElementById("submit");
+	var prevBtn = document.getElementById("prev");
+	var loveExpert = document.getElementById("loveExpert");
+	var displayDiv = document.getElementById("display");
+
+	//show options
+	loveExpert?.addEventListener("click", showOptions);
+	function showOptions() {
+		if (displayDiv.style.display === "none") {
+			displayDiv.style.display = "block";
+		}
+		displayDiv.innerHTML = "Loading...";
+		setTimeout(() => {
+			var recip = recipients
+				?.map((item) => {
+					return `<div class="listItems" onclick=next('${item.name}')>${item.name}</div>`;
+				})
+				.join("");
+			displayDiv.innerHTML = recip;
+		}, 1000);
+	}
+
+	//first
+	function next(itemName) {
+		displayDiv.innerHTML = "Loading...";
+		setTimeout(() => {
+			var checkedArray = recipients?.find((item) => {
+				return item.name === itemName;
+			});
+			if (checkedArray.firstLevel) {
+				var questions = checkedArray.firstLevel
+					?.map((item) => {
+						return `<div class="listItems" onclick=second('${itemName}','${item.id}')>${item.title}</div>`;
+					})
+					.join("");
+				displayDiv.innerHTML = questions;
+				if (prevBtn) {
+					prevBtn.style.display = "block";
+				}
+			}
+		}, 1000);
+	}
+	//second
+	function second(itemName, itemId) {
+		displayDiv.innerHTML = "Loading...";
+		setTimeout(() => {
+			var checkedArray = recipients?.find((item) => {
+				return item.name === itemName;
+			});
+			if (checkedArray.firstLevel) {
+				var secondLev = checkedArray.firstLevel.find((item) => {
+					return item.id === itemId;
+				});
+				if (secondLev.secondLevel) {
+					previousState = checkedArray.firstLevel;
+					var questions = secondLev.secondLevel
+						?.map((item) => {
+							return `<div class="listItems" onclick=third('${itemName}','${itemId}','${item.id}')>${item.title}</div>`;
+						})
+						.join("");
+					displayDiv.innerHTML = questions;
+					if (prevBtn) {
+						prevBtn.setAttribute("data-obj", itemName);
+						prevBtn.setAttribute("data-objfirstLevel", itemId);
+					}
+				}
+			}
+		}, 1000);
+	}
+	//third
+	function third(itemName, itemId, itemIdSec) {
+		displayDiv.innerHTML = "Loading...";
+		setTimeout(() => {
+			var checkedArray = recipients?.find((item) => {
+				return item.name === itemName;
+			});
+			if (checkedArray.firstLevel) {
+				var secondLev = checkedArray.firstLevel.find((item) => {
+					return item.id === itemId;
+				});
+
+				var thirdLev =
+					secondLev.secondLevel &&
+					secondLev.secondLevel.find((item) => {
+						return item.id === itemIdSec;
+					});
+				previousState = secondLev.secondLevel;
+				var questions = thirdLev.thirdLevel
+					?.map((item) => {
+						return `<div class="listItems" onclick="showBtn('${item.landing}')">${item.title}</div>`;
+					})
+					.join("");
+				displayDiv.innerHTML = questions;
+				if (prevBtn) {
+					prevBtn.setAttribute("data-objSecondLevel", itemIdSec);
+				}
+			}
+		}, 1000);
+	}
+
+	function showBtn(landing) {
+		if (nextBtn) {
+			nextBtn.style.display = "block";
+			nextBtn.setAttribute("data-landing", landing);
+		}
+	}
+	nextBtn?.addEventListener("click", (e) => {
+		var landingPage = e.target.dataset.landing;
+		window.location.href = "https://www.fnp.com/" + landingPage;
+	});
+	//previos
+	prevBtn?.addEventListener("click", (e) => {
+		var dataList = e.target.dataset;
+		console.log(dataList);
+		if (Object.keys(dataList).length > 0) {
+			console.log(previousState, "previousState");
+			var questions = previousState
+				?.map((item) => {
+					return `<div class="listItems" onclick="showBtn('${item.landing}')">${item.title}</div>`;
+				})
+				.join("");
+			displayDiv.innerHTML = questions;
+		} else {
+			showOptions();
+			prevBtn.style.display = "none";
+		}
+	});
+	// prevBtn?.addEventListener("click", () => {
+	// 	console.log(previousState, "previousState");
+	// 	if (previousState) {
+	// 		var questions = previousState
+	// 			?.map((item) => {
+	// 				return `<div class="listItems" onclick="showBtn('${item.landing}')">${item.title}</div>`;
+	// 			})
+	// 			.join("");
+	// 		displayDiv.innerHTML = questions;
+	// 	} else {
+	// 		showOptions();
+	// 		prevBtn.style.display = "none";
+	// 	}
+	// });
+</script>
