@@ -7,18 +7,18 @@
 		NextState = null;
 	const recipients = [
 		{
-			name: "Wife",
+			title: "Wife",
 			image: "https://i7.fnp.com/assets/images/cat/valentine/questions/layer1/wife.png",
-			firstLevel: [
+			nextlevel: [
 				{
 					id: "1st_after_marraige",
 					title: "First Valentines after marriage",
 					image: "https://i7.fnp.com/assets/images/cat/valentine/questions/layer1/first-valentine.png",
-					secondLevel: [
+					nextlevel: [
 						{
 							id: "grand",
 							title: "I am looking for something GRAND",
-							thirdLevel: [
+							nextlevel: [
 								{ id: "week", title: "I want to give her different gifts for the entire week", landing: "1" },
 								{ id: "budget", title: "Budget is no constraint", landing: "2" },
 								{ id: "longTerm", title: "Something that is useful for long", landing: "3" },
@@ -27,7 +27,7 @@
 						{
 							id: "surprise",
 							title: "I want to plan a surprise",
-							thirdLevel: [
+							nextlevel: [
 								{ id: "enthusiast", title: "She is a nature enthusiast", landing: "4" },
 								{ id: "makeup", title: "She is a makeup lover", landing: "5" },
 								{ id: "bollywood", title: "She loves Bollywood style surprises", landing: "6" },
@@ -36,7 +36,7 @@
 						{
 							id: "memorable",
 							title: "I want to Make it memorable",
-							thirdLevel: [
+							nextlevel: [
 								{ id: "not_too_romantic", title: "Not too romantic but sweet", landing: "7" },
 								{ id: "combo", title: "Probably a combo of gifts", landing: "8" },
 								{ id: "longTerm", title: "Something that she can cherish for long", landing: "9" },
@@ -61,11 +61,11 @@
 				},
 			],
 		},
-		{ name: "Girlfriend", image: "https://i7.fnp.com/assets/images/cat/valentine/questions/layer1/girfriend.png" },
-		{ name: "Fiancee", image: "https://i7.fnp.com/assets/images/cat/valentine/questions/layer1/Fiance.png" },
-		{ name: "Husband", image: "https://i7.fnp.com/assets/images/cat/valentine/questions/layer1/husbband.png" },
-		{ name: "Boyfriend", image: "https://i7.fnp.com/assets/images/cat/valentine/questions/layer1/boyfriend.png" },
-		{ name: "Fiance", image: "https://i7.fnp.com/assets/images/cat/valentine/questions/layer1/Fiancee.png" },
+		{ title: "Girlfriend", image: "https://i7.fnp.com/assets/images/cat/valentine/questions/layer1/girfriend.png" },
+		{ title: "Fiancee", image: "https://i7.fnp.com/assets/images/cat/valentine/questions/layer1/Fiance.png" },
+		{ title: "Husband", image: "https://i7.fnp.com/assets/images/cat/valentine/questions/layer1/husbband.png" },
+		{ title: "Boyfriend", image: "https://i7.fnp.com/assets/images/cat/valentine/questions/layer1/boyfriend.png" },
+		{ title: "Fiance", image: "https://i7.fnp.com/assets/images/cat/valentine/questions/layer1/Fiancee.png" },
 	];
 	//allElements
 	var nextBtn = document.getElementById("submit");
@@ -83,7 +83,7 @@
 		setTimeout(() => {
 			var recip = recipients
 				?.map((item) => {
-					return `<div class="listItems" onclick=next('${item.name}')>${item.name}</div>`;
+					return `<div class="listItems" onclick=next('${item.title}')>${item.title}</div>`;
 				})
 				.join("");
 			displayDiv.innerHTML = recip;
@@ -95,10 +95,10 @@
 		displayDiv.innerHTML = "Loading...";
 		setTimeout(() => {
 			var checkedArray = recipients?.find((item) => {
-				return item.name === itemName;
+				return item.title === itemName;
 			});
-			if (checkedArray.firstLevel) {
-				var questions = checkedArray.firstLevel
+			if (checkedArray.firstlevel) {
+				var questions = checkedArray.firstlevel
 					?.map((item) => {
 						return `<div class="listItems" onclick=second('${itemName}','${item.id}')>${item.title}</div>`;
 					})
@@ -115,15 +115,15 @@
 		displayDiv.innerHTML = "Loading...";
 		setTimeout(() => {
 			var checkedArray = recipients?.find((item) => {
-				return item.name === itemName;
+				return item.title === itemName;
 			});
-			if (checkedArray.firstLevel) {
-				var secondLev = checkedArray.firstLevel.find((item) => {
+			if (checkedArray.firstlevel) {
+				var secondLev = checkedArray.firstlevel.find((item) => {
 					return item.id === itemId;
 				});
-				if (secondLev.secondLevel) {
-					previousState = checkedArray.firstLevel;
-					var questions = secondLev.secondLevel
+				if (secondLev.secondlevel) {
+					//previousState = checkedArray.firstlevel;
+					var questions = secondLev.secondlevel
 						?.map((item) => {
 							return `<div class="listItems" onclick=third('${itemName}','${itemId}','${item.id}')>${item.title}</div>`;
 						})
@@ -131,7 +131,7 @@
 					displayDiv.innerHTML = questions;
 					if (prevBtn) {
 						prevBtn.setAttribute("data-obj", itemName);
-						prevBtn.setAttribute("data-objfirstLevel", itemId);
+						prevBtn.setAttribute("data-firstlevel", itemId);
 					}
 				}
 			}
@@ -142,27 +142,27 @@
 		displayDiv.innerHTML = "Loading...";
 		setTimeout(() => {
 			var checkedArray = recipients?.find((item) => {
-				return item.name === itemName;
+				return item.title === itemName;
 			});
-			if (checkedArray.firstLevel) {
-				var secondLev = checkedArray.firstLevel.find((item) => {
+			if (checkedArray.firstlevel) {
+				var secondLev = checkedArray.firstlevel.find((item) => {
 					return item.id === itemId;
 				});
 
 				var thirdLev =
-					secondLev.secondLevel &&
-					secondLev.secondLevel.find((item) => {
+					secondLev.secondlevel &&
+					secondLev.secondlevel.find((item) => {
 						return item.id === itemIdSec;
 					});
-				previousState = secondLev.secondLevel;
-				var questions = thirdLev.thirdLevel
+				//previousState = secondLev.secondlevel;
+				var questions = thirdLev.thirdlevel
 					?.map((item) => {
 						return `<div class="listItems" onclick="showBtn('${item.landing}')">${item.title}</div>`;
 					})
 					.join("");
 				displayDiv.innerHTML = questions;
 				if (prevBtn) {
-					prevBtn.setAttribute("data-objSecondLevel", itemIdSec);
+					prevBtn.setAttribute("data-secondlevel", itemIdSec);
 				}
 			}
 		}, 1000);
@@ -179,34 +179,110 @@
 		window.location.href = "https://www.fnp.com/" + landingPage;
 	});
 	//previos
+	function firstlevelGet(dataList) {
+		if (previousState === null) {
+			previousState = recipients.find((item) => {
+				return (item.title = dataList.obj);
+			});
+			for (const [dataKey, dataValue] of Object.entries(dataList)) {
+				if (dataKey !== "obj") {
+					for (const [key, value] of Object.entries(previousState)) {
+						if (key === dataKey) {
+							previousState = value;
+						}
+					}
+				}
+			}
+		}
+		var questions = previousState
+			?.map((item) => {
+				return `<div class="listItems">${item.title}</div>`;
+			})
+			.join("");
+		displayDiv.innerHTML = questions;
+		prevBtn.removeAttribute("data-firstlevel");
+	}
+	function SecondlevelGet(dataList) {
+		if (previousState === null) {
+			previousState = recipients.find((item) => {
+				return (item.title = dataList.obj);
+			});
+			console.log(previousState, "previousStatepreviousState");
+			if (Array.isArray(previousState)) {
+				for (const [dataKey, dataValue] of Object.entries(dataList)) {
+					previousState = previousState.find((item) => {
+						return item.id === dataValue;
+					});
+				}
+				console.log(previousState, "previousStatepreviousState");
+			} else {
+				for (const [dataKey, dataValue] of Object.entries(dataList)) {
+					if (dataKey !== "obj") {
+						for (const [key, value] of Object.entries(previousState)) {
+							if (key === dataKey) {
+								previousState = value;
+							}
+						}
+					}
+				}
+			}
+		}
+		console.log(Array.isArray(previousState));
+		console.log(previousState, "previousState");
+		// var questions = previousState
+		// 	?.map((item) => {
+		// 		return `<div class="listItems">${item.title}</div>`;
+		// 	})
+		// 	.join("");
+		// displayDiv.innerHTML = questions;
+		// prevBtn.removeAttribute("data-firstlevel");
+	}
 	prevBtn?.addEventListener("click", (e) => {
 		var dataList = e.target.dataset;
-		console.log(dataList);
-		if (Object.keys(dataList).length > 0) {
-			console.log(previousState, "previousState");
-			var questions = previousState
-				?.map((item) => {
-					return `<div class="listItems" onclick="showBtn('${item.landing}')">${item.title}</div>`;
-				})
-				.join("");
-			displayDiv.innerHTML = questions;
-		} else {
-			showOptions();
-			prevBtn.style.display = "none";
+		switch (Object.keys(dataList).length) {
+			case 0:
+				showOptions();
+				prevBtn.style.display = "none";
+				break;
+			case 1:
+				showOptions();
+				prevBtn.style.display = "none";
+				break;
+			case 2:
+				firstlevelGet(dataList);
+				break;
+			case 3:
+				SecondlevelGet(dataList);
 		}
+		// if (Object.keys(dataList).length > 0) {
+		// 	if (previousState === null) {
+		// 		previousState = recipients.find((item) => {
+		// 			return (item.title = dataList.obj);
+		// 		});
+		// 		for (const [dataKey, dataValue] of Object.entries(dataList)) {
+		// 			if (dataKey !== "obj") {
+		// 				for (const [key, value] of Object.entries(previousState)) {
+		// 					if (key === dataKey) {
+		// 						previousState = value;
+		// 					}
+		// 				}
+		// 			}
+		// 		}
+		// 	} else {
+		// 		previousState = recipients.find((item) => {
+		// 			return (item.title = dataList.obj);
+		// 		});
+		// 	}
+		// 	console.log(previousState, "previousState");
+		// 	var questions = previousState
+		// 		?.map((item) => {
+		// 			return `<div class="listItems" onclick="showBtn('${item.landing}')">${item.title}</div>`;
+		// 		})
+		// 		.join("");
+		// 	displayDiv.innerHTML = questions;
+		// } else {
+		// 	showOptions();
+		// 	prevBtn.style.display = "none";
+		// }
 	});
-	// prevBtn?.addEventListener("click", () => {
-	// 	console.log(previousState, "previousState");
-	// 	if (previousState) {
-	// 		var questions = previousState
-	// 			?.map((item) => {
-	// 				return `<div class="listItems" onclick="showBtn('${item.landing}')">${item.title}</div>`;
-	// 			})
-	// 			.join("");
-	// 		displayDiv.innerHTML = questions;
-	// 	} else {
-	// 		showOptions();
-	// 		prevBtn.style.display = "none";
-	// 	}
-	// });
 </script>
