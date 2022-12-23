@@ -1,4 +1,272 @@
-<div id="display" style="display: none"></div>
-<button id="prev" style="display: none">Prev</button>
-<button id="submit" style="display: none">Find Gifts</button>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+
+<style>
+	* {
+		margin: 0;
+		padding: 0;
+		box-sizing: border-box;
+	}
+	button {
+		border: 0;
+		background-color: #ff9212;
+		color: #fff;
+		font-size: 1rem;
+		padding: 7px 15px;
+		border-radius: 4px;
+		cursor: pointer;
+	}
+	button:disabled {
+		opacity: 0.5;
+		pointer-events: none;
+	}
+	#loveExpert {
+		position: fixed;
+		right: 10px;
+		bottom: 20px;
+	}
+	.displayPopup {
+		display: none;
+		width: 100%;
+		height: 100%;
+		position: fixed;
+		align-items: center;
+		justify-content: center;
+		background: rgba(0, 0, 0, 0.3);
+	}
+	.displaySec {
+		background: #fff;
+		padding: 15px;
+		border-radius: 8px;
+		box-shadow: 0 2px 6px rgb(0 0 0 / 20%);
+		width: 80%;
+		max-width: 640px;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		flex-direction: column;
+	}
+	#display {
+		width: 100%;
+		min-height: 200px;
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		flex-wrap: wrap;
+	}
+	.btnSec {
+		width: 100%;
+		align-items: center;
+		justify-content: space-evenly;
+		display: flex;
+	}
+	.listItems {
+		width: 30%;
+		padding: 10px 20px;
+		border: 1px solid #d5d5d5;
+		box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+		text-align: center;
+		cursor: pointer;
+		transition: all ease-in-out 0.25s;
+		background: #fff;
+	}
+	.listItems:hover,
+	.listItems.active {
+		background: #e53333;
+		color: #fff;
+		border-radius: 10px;
+		border: 1px solid #e53333;
+	}
+	#prev {
+		display: none;
+	}
+</style>
+<div class="displayPopup">
+	<div class="displaySec">
+		<div id="display"></div>
+		<div class="btnSec">
+			<button id="prev">Prev</button>
+			<button id="next" disabled>Next</button>
+		</div>
+	</div>
+</div>
+
 <button id="loveExpert">Love Expert</button>
+<script>
+	const nextBtn = document.getElementById("next"),
+		prevBtn = document.getElementById("prev"),
+		loveExpert = document.getElementById("loveExpert"),
+		displayDiv = document.getElementById("display"),
+		displayPopup = document.querySelector(".displayPopup");
+	let allListItems = null,
+		currentStatus = null,
+		prevtStatus = null;
+
+	const recipients = [
+		{
+			id: "Wife",
+			image: "https://i7.fnp.com/assets/images/cat/valentine/questions/layer1/wife.png",
+			nextlevel: [
+				{
+					id: "1st_after_marraige",
+					title: "First Valentines after marriage",
+					image: "https://i7.fnp.com/assets/images/cat/valentine/questions/layer1/first-valentine.png",
+					nextlevel: [
+						{
+							id: "grand",
+							title: "I am looking for something GRAND",
+							nextlevel: [
+								{ id: "week", title: "I want to give her different gifts for the entire week", landing: "1" },
+								{ id: "budget", title: "Budget is no constraint", landing: "2" },
+								{ id: "longTerm", title: "Something that is useful for long", landing: "3" },
+							],
+						},
+						{
+							id: "surprise",
+							title: "I want to plan a surprise",
+							nextlevel: [
+								{ id: "enthusiast", title: "She is a nature enthusiast", landing: "4" },
+								{ id: "makeup", title: "She is a makeup lover", landing: "5" },
+								{ id: "bollywood", title: "She loves Bollywood style surprises", landing: "6" },
+							],
+						},
+						{
+							id: "memorable",
+							title: "I want to Make it memorable",
+							nextlevel: [
+								{ id: "not_too_romantic", title: "Not too romantic but sweet", landing: "7" },
+								{ id: "combo", title: "Probably a combo of gifts", landing: "8" },
+								{ id: "longTerm", title: "Something that she can cherish for long", landing: "9" },
+							],
+						},
+					],
+				},
+				{
+					id: "with_kids",
+					title: "Valentine's with kids",
+					image: "https://i7.fnp.com/assets/images/cat/valentine/questions/layer1/coupals-with-kids.png",
+				},
+				{
+					id: "after_a_long_time",
+					title: "Valentine's after a long time",
+					image: "https://i7.fnp.com/assets/images/cat/valentine/questions/layer1/valentine-long-time.png",
+				},
+				{
+					id: "special_year_both",
+					title: "Special year for both",
+					image: "https://i7.fnp.com/assets/images/cat/valentine/questions/layer1/special-valentine-wife.png",
+				},
+			],
+		},
+		{ id: "Girlfriend", image: "https://i7.fnp.com/assets/images/cat/valentine/questions/layer1/girfriend.png" },
+		{ id: "Fiancee", image: "https://i7.fnp.com/assets/images/cat/valentine/questions/layer1/Fiance.png" },
+		{ id: "Husband", image: "https://i7.fnp.com/assets/images/cat/valentine/questions/layer1/husbband.png" },
+		{ id: "Boyfriend", image: "https://i7.fnp.com/assets/images/cat/valentine/questions/layer1/boyfriend.png" },
+		{ id: "Fiance", image: "https://i7.fnp.com/assets/images/cat/valentine/questions/layer1/Fiancee.png" },
+	];
+
+	loveExpert?.addEventListener("click", showOptions);
+	function showOptions() {
+		displayPopup.style.display = "flex";
+		displayDiv.innerHTML = "Loading...";
+		setTimeout(() => {
+			var recip = recipients
+				?.map((item) => {
+					return `<div class="listItems" data-recipient="${item.id}">${item.id}</div>`;
+				})
+				.join("");
+			displayDiv.innerHTML = recip;
+			getAllListItems();
+			prevBtn.style.display = "none";
+		}, 1000);
+	}
+	//getAllListItems
+	function getAllListItems() {
+		allListItems = displayDiv.querySelectorAll(".listItems");
+		allListItems &&
+			allListItems.length > 0 &&
+			allListItems.forEach((listItem) => {
+				listItem.classList.remove("active");
+				listItem.addEventListener("click", () => {
+					allListItems.forEach((listItem) => {
+						listItem.classList.remove("active");
+					});
+					listItem.classList.add("active");
+					nextBtn.removeAttribute("disabled");
+				});
+			});
+	}
+	//next btn click
+
+	nextBtn.addEventListener("click", () => {
+		let selectedObj = null;
+		prevtStatus = currentStatus;
+		allListItems.forEach((listItem) => {
+			if (listItem.classList.contains("active")) {
+				var selectRecipients = listItem.getAttribute("data-recipient");
+				if (currentStatus === null) {
+					selectedObj = recipients.find((item) => {
+						return item.id === selectRecipients;
+					});
+				} else {
+					selectedObj = currentStatus.find((item) => {
+						return item.id === selectRecipients;
+					});
+				}
+
+				if (selectedObj.nextlevel) {
+					currentStatus = selectedObj.nextlevel;
+					displayDiv.innerHTML = "Loading...";
+					setTimeout(() => {
+						var recip = selectedObj.nextlevel
+							?.map((item) => {
+								return `<div class="listItems" data-recipient="${item.id}">${item.title}</div>`;
+							})
+							.join("");
+						displayDiv.innerHTML = recip;
+						getAllListItems();
+						prevBtn.style.display = "block";
+						nextBtn.setAttribute("disabled", true);
+						updateBtnText();
+					}, 1000);
+				} else {
+					let finalPath = currentStatus.find((item) => {
+						return item.id === selectRecipients;
+					});
+					window.location.href = "https://www.fnp.com/" + finalPath.landing;
+				}
+			}
+		});
+	});
+	function updateBtnText() {
+		console.log(currentStatus, prevtStatus);
+		let finalLevel = currentStatus.find((item) => {
+			return item.landing ? true : false;
+		});
+		if (finalLevel) {
+			nextBtn.textContent = "Find Gifts";
+		}
+	}
+	//previous
+	prevBtn.addEventListener("click", () => {
+		showOptions();
+		currentStatus = null;
+		// if (prevtStatus === null) {
+		// 	showOptions();
+		// 	currentStatus = null;
+		// }
+		// else {
+		// 	displayDiv.innerHTML = "Loading...";
+		// 	setTimeout(() => {
+		// 		var recip = prevtStatus
+		// 			?.map((item) => {
+		// 				return `<div class="listItems" data-recipient="${item.id}">${item.title}</div>`;
+		// 			})
+		// 			.join("");
+		// 		displayDiv.innerHTML = recip;
+		// 		getAllListItems();
+		// 		prevBtn.style.display = "block";
+		// 		nextBtn.setAttribute("disabled", true);
+		// 	}, 1000);
+		// }
+	});
+</script>
