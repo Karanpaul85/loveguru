@@ -58,6 +58,8 @@
 		align-items: center;
 		justify-content: space-evenly;
 		display: flex;
+		opacity: 0;
+		transition: all ease-in-out 0.25s;
 	}
 	.listItems {
 		width: 30%;
@@ -68,6 +70,7 @@
 		cursor: pointer;
 		transition: all ease-in-out 0.25s;
 		background: #fff;
+		margin-bottom: 15px;
 	}
 	.listItems:hover,
 	.listItems.active {
@@ -78,6 +81,12 @@
 	}
 	#prev {
 		display: none;
+	}
+	.optionWrapper {
+		width: 100%;
+		display: flex;
+		justify-content: space-between;
+		flex-wrap: wrap;
 	}
 </style>
 <div class="displayPopup">
@@ -98,8 +107,8 @@
 		displayDiv = document.getElementById("display"),
 		displayPopup = document.querySelector(".displayPopup");
 	let allListItems = null,
-		currentStatus = null,
-		prevtStatus = null;
+		prevObj = null,
+		finalObj = null;
 
 	const recipients = [
 		{
@@ -177,6 +186,7 @@
 			displayDiv.innerHTML = recip;
 			getAllListItems();
 			prevBtn.style.display = "none";
+			prevObj = null;
 		}, 1000);
 	}
 	//getAllListItems
@@ -190,83 +200,106 @@
 					allListItems.forEach((listItem) => {
 						listItem.classList.remove("active");
 					});
+					document.querySelector(".btnSec").style.opacity = 1;
 					listItem.classList.add("active");
 					nextBtn.removeAttribute("disabled");
 				});
 			});
 	}
 	//next btn click
-
-	nextBtn.addEventListener("click", () => {
-		let selectedObj = null;
-		prevtStatus = currentStatus;
+	nextBtn.addEventListener("click", async () => {
+		let landingUrl = null;
 		allListItems.forEach((listItem) => {
 			if (listItem.classList.contains("active")) {
 				var selectRecipients = listItem.getAttribute("data-recipient");
-				if (currentStatus === null) {
-					selectedObj = recipients.find((item) => {
-						return item.id === selectRecipients;
-					});
+				landingUrl = listItem.getAttribute("data-landing");
+				if (prevObj === null) {
+					prevObj = selectRecipients;
 				} else {
-					selectedObj = currentStatus.find((item) => {
-						return item.id === selectRecipients;
-					});
-				}
-
-				if (selectedObj.nextlevel) {
-					currentStatus = selectedObj.nextlevel;
-					displayDiv.innerHTML = "Loading...";
-					setTimeout(() => {
-						var recip = selectedObj.nextlevel
-							?.map((item) => {
-								return `<div class="listItems" data-recipient="${item.id}">${item.title}</div>`;
-							})
-							.join("");
-						displayDiv.innerHTML = recip;
-						getAllListItems();
-						prevBtn.style.display = "block";
-						nextBtn.setAttribute("disabled", true);
-						updateBtnText();
-					}, 1000);
-				} else {
-					let finalPath = currentStatus.find((item) => {
-						return item.id === selectRecipients;
-					});
-					window.location.href = "https://www.fnp.com/" + finalPath.landing;
+					prevObj += "-" + selectRecipients;
 				}
 			}
 		});
+		if (nextBtn.textContent === "Find Gifts") {
+			window.location.href = `https://www.fnp.com/${landingUrl}`;
+		} else {
+			await getPreviousObj("NextCall");
+		}
 	});
-	function updateBtnText() {
-		console.log(currentStatus, prevtStatus);
-		let finalLevel = currentStatus.find((item) => {
-			return item.landing ? true : false;
-		});
+	//
+	async function getPreviousObj(callType) {
+		var y = null;
+		if (callType === "NextCall") {
+			y = await prevObj.split("-");
+		} else {
+			y = await prevObj.split("-");
+			y.pop();
+			prevObj = y.join("-");
+		}
+		for (let i = 0; i < y.length; i++) {
+			if (finalObj) {
+				finalObj = await getLastlevel(finalObj, y[i]);
+				break;
+			} else {
+				finalObj = await getLastlevel(recipients, y[i]);
+			}
+		}
+		await createLists(finalObj);
+	}
+	//
+	async function getLastlevel(finalObj, id) {
+		var myObj = "";
+		if (Array.isArray(finalObj)) {
+			myObj = await finalObj.find((item) => {
+				return item;
+			});
+		} else {
+			myObj = await finalObj.nextlevel.find((item) => {
+				return item;
+			});
+		}
+		return myObj;
+	}
+	//
+	function createLists(finalObj) {
+		if (finalObj.nextlevel) {
+			displayDiv.innerHTML = "Loading...";
+			setTimeout(() => {
+				var recip = finalObj.nextlevel
+					?.map((item) => {
+						updateBtnText(item);
+						let landingPage = item.landing ? "data-landing=" + item.landing : "";
+						return `<div class="listItems" data-recipient="${item.id}" ${landingPage}>${item.title}</div>`;
+					})
+					.join("");
+				displayDiv.innerHTML = recip;
+				getAllListItems();
+				prevBtn.style.display = "block";
+				nextBtn.setAttribute("disabled", true);
+			}, 1000);
+		}
+	}
+	//
+	function updateBtnText(item) {
+		let finalLevel = false;
+		for (let key in item) {
+			if (key === "landing") {
+				finalLevel = true;
+			}
+		}
 		if (finalLevel) {
 			nextBtn.textContent = "Find Gifts";
 		}
 	}
 	//previous
-	prevBtn.addEventListener("click", () => {
-		showOptions();
-		currentStatus = null;
-		// if (prevtStatus === null) {
-		// 	showOptions();
-		// 	currentStatus = null;
-		// }
-		// else {
-		// 	displayDiv.innerHTML = "Loading...";
-		// 	setTimeout(() => {
-		// 		var recip = prevtStatus
-		// 			?.map((item) => {
-		// 				return `<div class="listItems" data-recipient="${item.id}">${item.title}</div>`;
-		// 			})
-		// 			.join("");
-		// 		displayDiv.innerHTML = recip;
-		// 		getAllListItems();
-		// 		prevBtn.style.display = "block";
-		// 		nextBtn.setAttribute("disabled", true);
-		// 	}, 1000);
-		// }
+	prevBtn.addEventListener("click", async () => {
+		finalObj = null;
+		let y = await prevObj.split("-");
+		if (y.length === 1) {
+			showOptions();
+		} else {
+			await getPreviousObj("PrevCall");
+		}
+		nextBtn.textContent = "Next";
 	});
 </script>
