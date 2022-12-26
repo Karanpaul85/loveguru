@@ -107,10 +107,7 @@
 		displayDiv = document.getElementById("display"),
 		displayPopup = document.querySelector(".displayPopup");
 	let allListItems = null,
-		prevObj = null,
-		finalObj = null,
-		level = 0;
-
+		prevObj = null;
 	const recipients = [
 		{
 			id: "Wife",
@@ -407,33 +404,8 @@
 		for (let i = 0; i < y.length; i++) {
 			myfun(y[i]);
 		}
-		if (callType === "NextCall") {
-			level += 1;
-		} else {
-			level -= 1;
-		}
 	}
-
-	//
-	async function getLastlevel(finalObj, id) {
-		console.warn(id, "id", finalObj);
-		var myObj = "";
-		if (Array.isArray(finalObj)) {
-			myObj = await finalObj.find((item) => {
-				if (item.id == id) {
-					return item;
-				}
-			});
-		} else {
-			myObj = await finalObj.nextlevel.find((item) => {
-				if (item.id == id) {
-					return item;
-				}
-			});
-		}
-		return myObj;
-	}
-	//
+	//create list items
 	function createLists(finalObj) {
 		if (finalObj.nextlevel) {
 			displayDiv.innerHTML = "Loading...";
@@ -464,9 +436,8 @@
 			nextBtn.textContent = "Find Gifts";
 		}
 	}
-	//previous
+	//previous functionality
 	prevBtn.addEventListener("click", async () => {
-		finalObj = null;
 		let y = await prevObj.split("-");
 		if (y.length === 1) {
 			showOptions();
