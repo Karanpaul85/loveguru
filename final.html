@@ -108,7 +108,8 @@
 		displayPopup = document.querySelector(".displayPopup");
 	let allListItems = null,
 		prevObj = null,
-		finalObj = null;
+		finalObj = null,
+		level = 0;
 
 	const recipients = [
 		{
@@ -153,20 +154,163 @@
 					id: "with_kids",
 					title: "Valentine's with kids",
 					image: "https://i7.fnp.com/assets/images/cat/valentine/questions/layer1/coupals-with-kids.png",
+					nextlevel: [
+						{
+							id: "grand",
+							title: "I am looking for something GRAND with kids",
+							nextlevel: [
+								{ id: "week", title: "I want to give her different gifts for the entire week", landing: "10" },
+								{ id: "budget", title: "Budget is no constraint", landing: "2" },
+								{ id: "longTerm", title: "Something that is useful for long", landing: "11" },
+							],
+						},
+						{
+							id: "surprise",
+							title: "I want to plan a surprise with kids",
+							nextlevel: [
+								{ id: "enthusiast", title: "She is a nature enthusiast", landing: "12" },
+								{ id: "makeup", title: "She is a makeup lover", landing: "13" },
+								{ id: "bollywood", title: "She loves Bollywood style surprises", landing: "14" },
+							],
+						},
+						{
+							id: "memorable",
+							title: "I want to Make it memorable with kids",
+							nextlevel: [
+								{ id: "not_too_romantic", title: "Not too romantic but sweet", landing: "15" },
+								{ id: "combo", title: "Probably a combo of gifts", landing: "16" },
+								{ id: "longTerm", title: "Something that she can cherish for long", landing: "17" },
+							],
+						},
+					],
 				},
 				{
 					id: "after_a_long_time",
 					title: "Valentine's after a long time",
 					image: "https://i7.fnp.com/assets/images/cat/valentine/questions/layer1/valentine-long-time.png",
+					nextlevel: [
+						{
+							id: "grand",
+							title: "I am looking for something GRAND",
+							nextlevel: [
+								{ id: "week", title: "I want to give her different gifts for the entire week", landing: "18" },
+								{ id: "budget", title: "Budget is no constraint", landing: "19" },
+								{ id: "longTerm", title: "Something that is useful for long", landing: "20" },
+							],
+						},
+						{
+							id: "surprise",
+							title: "I want to plan a surprise",
+							nextlevel: [
+								{ id: "enthusiast", title: "She is a nature enthusiast", landing: "21" },
+								{ id: "makeup", title: "She is a makeup lover", landing: "22" },
+								{ id: "bollywood", title: "She loves Bollywood style surprises", landing: "23" },
+							],
+						},
+						{
+							id: "memorable",
+							title: "I want to Make it memorable",
+							nextlevel: [
+								{ id: "not_too_romantic", title: "Not too romantic but sweet", landing: "24" },
+								{ id: "combo", title: "Probably a combo of gifts", landing: "25" },
+								{ id: "longTerm", title: "Something that she can cherish for long", landing: "26" },
+							],
+						},
+					],
 				},
 				{
 					id: "special_year_both",
 					title: "Special year for both",
 					image: "https://i7.fnp.com/assets/images/cat/valentine/questions/layer1/special-valentine-wife.png",
+					nextlevel: [
+						{
+							id: "grand",
+							title: "I am looking for something GRAND",
+							nextlevel: [
+								{ id: "week", title: "I want to give her different gifts for the entire week", landing: "27" },
+								{ id: "budget", title: "Budget is no constraint", landing: "28" },
+								{ id: "longTerm", title: "Something that is useful for long", landing: "29" },
+							],
+						},
+						{
+							id: "surprise",
+							title: "I want to plan a surprise",
+							nextlevel: [
+								{ id: "enthusiast", title: "She is a nature enthusiast", landing: "30" },
+								{ id: "makeup", title: "She is a makeup lover", landing: "31" },
+								{ id: "bollywood", title: "She loves Bollywood style surprises", landing: "32" },
+							],
+						},
+						{
+							id: "memorable",
+							title: "I want to Make it memorable",
+							nextlevel: [
+								{ id: "not_too_romantic", title: "Not too romantic but sweet", landing: "33" },
+								{ id: "combo", title: "Probably a combo of gifts", landing: "34" },
+								{ id: "longTerm", title: "Something that she can cherish for long", landing: "45" },
+							],
+						},
+					],
 				},
 			],
 		},
-		{ id: "Girlfriend", image: "https://i7.fnp.com/assets/images/cat/valentine/questions/layer1/girfriend.png" },
+		{
+			id: "Girlfriend",
+			image: "https://i7.fnp.com/assets/images/cat/valentine/questions/layer1/girfriend.png",
+			nextlevel: [
+				{
+					id: "proposing",
+					title: "I am proposing",
+					nextlevel: [
+						{
+							id: "demanding",
+							title: "My Girlfriend is demanding",
+							nextlevel: [
+								{ id: "enthusiast", title: "She is a nature enthusiast", landing: "1" },
+								{ id: "makeup", title: "She is a makeup lover", landing: "2" },
+								{ id: "bollywood", title: "She loves Bollywood style surprises", landing: "3" },
+							],
+						},
+						{
+							id: "romantic",
+							title: "I am looking for something overly romantic",
+							nextlevel: [
+								{ id: "week", title: "I want to give her different gifts for the entire week", landing: "1" },
+								{ id: "budget", title: "Budget is no constraint", landing: "2" },
+								{ id: "memorable", title: "I want to gift something memorable", landing: "3" },
+							],
+						},
+						{
+							id: "subtle",
+							title: "I am looking for something subtle",
+							nextlevel: [
+								{ id: "not_too_romantic", title: "Not too romantic but sweet", landing: "1" },
+								{ id: "combo", title: "Probably a combo of gifts", landing: "2" },
+								{ id: "longTerm", title: "Something that is useful for long", landing: "3" },
+							],
+						},
+					],
+				},
+				{
+					id: "surprise",
+					title: "I want to plan a surprise",
+					nextlevel: [
+						{ id: "enthusiast", title: "She is a nature enthusiast", landing: "4" },
+						{ id: "makeup", title: "She is a makeup lover", landing: "5" },
+						{ id: "bollywood", title: "She loves Bollywood style surprises", landing: "6" },
+					],
+				},
+				{
+					id: "memorable",
+					title: "I want to Make it memorable",
+					nextlevel: [
+						{ id: "not_too_romantic", title: "Not too romantic but sweet", landing: "7" },
+						{ id: "combo", title: "Probably a combo of gifts", landing: "8" },
+						{ id: "longTerm", title: "Something that she can cherish for long", landing: "9" },
+					],
+				},
+			],
+		},
 		{ id: "Fiancee", image: "https://i7.fnp.com/assets/images/cat/valentine/questions/layer1/Fiance.png" },
 		{ id: "Husband", image: "https://i7.fnp.com/assets/images/cat/valentine/questions/layer1/husbband.png" },
 		{ id: "Boyfriend", image: "https://i7.fnp.com/assets/images/cat/valentine/questions/layer1/boyfriend.png" },
@@ -226,8 +370,32 @@
 			await getPreviousObj("NextCall");
 		}
 	});
+	//creating clouser
+	function myClouser(arr) {
+		var newArr = function (id) {
+			let newObj = null;
+			if (Array.isArray(arr)) {
+				newObj = arr.find((item) => {
+					if (item.id === id) {
+						return item;
+					}
+				});
+			} else {
+				newObj = arr.nextlevel.find((item) => {
+					if (item.id === id) {
+						return item;
+					}
+				});
+			}
+			arr = newObj;
+			createLists(arr);
+		};
+		return newArr;
+	}
+
 	//
 	async function getPreviousObj(callType) {
+		var myfun = myClouser(recipients);
 		var y = null;
 		if (callType === "NextCall") {
 			y = await prevObj.split("-");
@@ -237,25 +405,30 @@
 			prevObj = y.join("-");
 		}
 		for (let i = 0; i < y.length; i++) {
-			if (finalObj) {
-				finalObj = await getLastlevel(finalObj, y[i]);
-				break;
-			} else {
-				finalObj = await getLastlevel(recipients, y[i]);
-			}
+			myfun(y[i]);
 		}
-		await createLists(finalObj);
+		if (callType === "NextCall") {
+			level += 1;
+		} else {
+			level -= 1;
+		}
 	}
+
 	//
 	async function getLastlevel(finalObj, id) {
+		console.warn(id, "id", finalObj);
 		var myObj = "";
 		if (Array.isArray(finalObj)) {
 			myObj = await finalObj.find((item) => {
-				return item;
+				if (item.id == id) {
+					return item;
+				}
 			});
 		} else {
 			myObj = await finalObj.nextlevel.find((item) => {
-				return item;
+				if (item.id == id) {
+					return item;
+				}
 			});
 		}
 		return myObj;
