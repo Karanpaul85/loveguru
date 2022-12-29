@@ -313,23 +313,6 @@
 		{ id: "Boyfriend", image: "https://i7.fnp.com/assets/images/cat/valentine/questions/layer1/boyfriend.png" },
 		{ id: "Fiance", image: "https://i7.fnp.com/assets/images/cat/valentine/questions/layer1/Fiancee.png" },
 	];
-
-	loveExpert?.addEventListener("click", showOptions);
-	function showOptions() {
-		displayPopup.style.display = "flex";
-		displayDiv.innerHTML = "Loading...";
-		setTimeout(() => {
-			var recip = recipients
-				?.map((item) => {
-					return `<div class="listItems" data-recipient="${item.id}">${item.id}</div>`;
-				})
-				.join("");
-			displayDiv.innerHTML = recip;
-			getAllListItems();
-			prevBtn.style.display = "none";
-			prevObj = null;
-		}, 1000);
-	}
 	//getAllListItems
 	function getAllListItems() {
 		allListItems = displayDiv.querySelectorAll(".listItems");
@@ -347,26 +330,6 @@
 				});
 			});
 	}
-	//next btn click
-	nextBtn.addEventListener("click", async () => {
-		let landingUrl = null;
-		allListItems.forEach((listItem) => {
-			if (listItem.classList.contains("active")) {
-				var selectRecipients = listItem.getAttribute("data-recipient");
-				landingUrl = listItem.getAttribute("data-landing");
-				if (prevObj === null) {
-					prevObj = selectRecipients;
-				} else {
-					prevObj += "-" + selectRecipients;
-				}
-			}
-		});
-		if (nextBtn.textContent === "Find Gifts") {
-			window.location.href = `https://www.fnp.com/${landingUrl}`;
-		} else {
-			await getPreviousObj("NextCall");
-		}
-	});
 	//creating clouser
 	function myClouser(arr) {
 		var newArr = function (id) {
@@ -389,7 +352,6 @@
 		};
 		return newArr;
 	}
-
 	//
 	async function getPreviousObj(callType) {
 		var myfun = myClouser(recipients);
@@ -436,6 +398,44 @@
 			nextBtn.textContent = "Find Gifts";
 		}
 	}
+	//load popup
+	loveExpert?.addEventListener("click", showOptions);
+	function showOptions() {
+		displayPopup.style.display = "flex";
+		displayDiv.innerHTML = "Loading...";
+		setTimeout(() => {
+			var recip = recipients
+				?.map((item) => {
+					return `<div class="listItems" data-recipient="${item.id}">${item.id}</div>`;
+				})
+				.join("");
+			displayDiv.innerHTML = recip;
+			getAllListItems();
+			prevBtn.style.display = "none";
+			prevObj = null;
+		}, 1000);
+	}
+
+	//next btn click
+	nextBtn.addEventListener("click", async () => {
+		let landingUrl = null;
+		allListItems.forEach((listItem) => {
+			if (listItem.classList.contains("active")) {
+				var selectRecipients = listItem.getAttribute("data-recipient");
+				landingUrl = listItem.getAttribute("data-landing");
+				if (prevObj === null) {
+					prevObj = selectRecipients;
+				} else {
+					prevObj += "-" + selectRecipients;
+				}
+			}
+		});
+		if (nextBtn.textContent === "Find Gifts") {
+			window.location.href = `https://www.fnp.com/${landingUrl}`;
+		} else {
+			await getPreviousObj("NextCall");
+		}
+	});
 	//previous functionality
 	prevBtn.addEventListener("click", async () => {
 		let y = await prevObj.split("-");
