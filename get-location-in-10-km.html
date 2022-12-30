@@ -1,0 +1,74 @@
+<ol>
+	<li data-lat="28.519876380687283" data-lang="77.158879">Vasant Kunj</li>
+	<li data-lat="28.5066094088181" data-lang="77.18492562699119">Chattarpur</li>
+	<li data-lat="28.6915514036074" data-lang="77.164729">Ashok Vihar</li>
+	<li data-lat="28.557532212970163" data-lang="77.09897254233039">T-3 Airport</li>
+	<li data-lat="28.657518649582222" data-lang="77.07963270914512">Vikaspuri</li>
+	<li data-lat="28.596278541003258" data-lang="77.05319616932155">Dwarka Sector 5</li>
+	<li data-lat="28.583366856991358" data-lang="77.07171">Dwarka Sector 7</li>
+	<li data-lat="28.624185956137698" data-lang="77.08149408466079">Janakpuri</li>
+	<li data-lat="28.718563591541326" data-lang="77.12620916932156">Rohini</li>
+	<li data-lat="28.537618764030228" data-lang="77.24311632271372">GK2</li>
+	<li data-lat="28.550845964171014" data-lang="77.23636016932156">GK1</li>
+	<li data-lat="28.502585709218938" data-lang="77.16851271165197">MG Road</li>
+	<li data-lat="28.533540156729398" data-lang="77.10986883067842">Mahipalpur</li>
+	<li data-lat="28.65610742942539" data-lang="77.17578129085489">Patel Nagar</li>
+</ol>
+<button id="locationFilter" onclick="currentLocation()">Filter By Location</button>
+<script>
+	var radius = 10;
+	var currentLat = null;
+	var currentLang = null;
+
+	function currentLocation() {
+		navigator.permissions
+			.query({
+				name: "geolocation",
+			})
+			.then(function (result) {
+				console.log(result.state);
+				if (result.state === "granted" || result.state === "prompt") {
+					if (navigator.geolocation) {
+						navigator.geolocation.getCurrentPosition(showPosition);
+					} else {
+						alert("Geolocation is not supported by this browser.");
+					}
+				} else {
+					alert("You are blocked your Geolocation this browser.");
+				}
+			});
+	}
+
+	function showPosition(position) {
+		currentLat = position.coords.latitude;
+		currentLang = position.coords.longitude;
+		var allList = document.querySelectorAll("ol li");
+		allList?.forEach((item) => {
+			var itemLat = item.dataset.lat;
+			var itemLang = item.dataset.lang;
+			if (!(distance(currentLat, currentLang, itemLat, itemLang, "K") <= 10)) {
+				item.style.display = "none";
+			}
+		});
+	}
+	function distance(lat1, lon1, lat2, lon2, unit) {
+		var radlat1 = (Math.PI * lat1) / 180;
+		var radlat2 = (Math.PI * lat2) / 180;
+		var theta = lon1 - lon2;
+		var radtheta = (Math.PI * theta) / 180;
+		var dist = Math.sin(radlat1) * Math.sin(radlat2) + Math.cos(radlat1) * Math.cos(radlat2) * Math.cos(radtheta);
+		if (dist > 1) {
+			dist = 1;
+		}
+		dist = Math.acos(dist);
+		dist = (dist * 180) / Math.PI;
+		dist = dist * 60 * 1.1515;
+		if (unit == "K") {
+			dist = dist * 1.609344;
+		}
+		if (unit == "N") {
+			dist = dist * 0.8684;
+		}
+		return dist;
+	}
+</script>
